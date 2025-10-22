@@ -1,13 +1,13 @@
 from django.shortcuts import render, redirect
-from .models import Worker, Position, Task
-from .forms import WorkerForm, PositionForm, TaskForm
+from .models import Worker, Position, Task, TaskType
+from .forms import WorkerForm, PositionForm, TaskTypeForm, TaskForm
 
 
 def home(request):
     workers = Worker.objects.all()
     tasks = Task.objects.all()
     positions = Position.objects.all()
-
+    task_types = TaskType.objects.all()
     return render(
         request,
         'home.html',
@@ -15,6 +15,7 @@ def home(request):
             'workers': workers,
             'tasks': tasks,
             'positions': positions,
+            'task_types': task_types,
         },
     )
 
@@ -29,7 +30,6 @@ def add_worker(request):
             return redirect('home')
     else:
         form = WorkerForm()
-
     return render(request, 'add_worker.html', {'form': form})
 
 
@@ -41,8 +41,18 @@ def add_position(request):
             return redirect('home')
     else:
         form = PositionForm()
-
     return render(request, 'add_position.html', {'form': form})
+
+
+def add_task_type(request):
+    if request.method == 'POST':
+        form = TaskTypeForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('home')
+    else:
+        form = TaskTypeForm()
+    return render(request, 'add_task_type.html', {'form': form})
 
 
 def add_task(request):
@@ -53,7 +63,6 @@ def add_task(request):
             return redirect('home')
     else:
         form = TaskForm()
-
     return render(request, 'add_task.html', {'form': form})
 
 
