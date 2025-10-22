@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lista zadań</title>
+</head>
+<body>
+    <h1>Lista zadań</h1>
+    <ul>
+        {% for task in tasks %}
+            <li>
+                <strong>{{ task.name }}</strong> ({{ task.deadline }}) - {% if task.is_completed %}Wykonane{% else %}Do zrobienia{% endif %}
+            </li>
+        {% empty %}
+            <li>Brak zadań w bazie.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
