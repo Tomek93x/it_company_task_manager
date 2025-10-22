@@ -3,8 +3,6 @@
 from django.urls import path
 from . import views
 
-app_name = "catalog"
-
 urlpatterns = [
     path("", views.home, name="home"),
     path("add-worker/", views.add_worker, name="add_worker"),
