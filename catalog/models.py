@@ -20,7 +20,9 @@ class Worker(AbstractUser):
     position = models.ForeignKey(
         Position,
         on_delete=models.CASCADE,
-        related_name='workers'
+        related_name='workers',
+        null=True,
+        blank=True,
     )
 
     def __str__(self):
