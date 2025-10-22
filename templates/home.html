@@ -4,7 +4,36 @@
     <title>IT Company Task Manager</title>
 </head>
 <body>
-    <h1>Witaj w IT Company Task Manager!</h1>
-    <p>Twoja aplikacja Django działa poprawnie.</p>
+    <h1>Strona główna</h1>
+
+    <h2>Pracownicy</h2>
+    <ul>
+        {% for w in workers %}
+        <li>{{ w.first_name }} {{ w.last_name }} - {{ w.position }}</li>
+        {% empty %}
+        <li>Brak pracowników</li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'add_worker' %}">Dodaj pracownika</a>
+
+    <h2>Stanowiska</h2>
+    <ul>
+        {% for p in positions %}
+        <li>{{ p.name }}</li>
+        {% empty %}
+        <li>Brak stanowisk</li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'add_position' %}">Dodaj stanowisko</a>
+
+    <h2>Zadania</h2>
+    <ul>
+        {% for t in tasks %}
+        <li>{{ t.name }} - {{ t.deadline }} - {{ t.priority }}</li>
+        {% empty %}
+        <li>Brak zadań</li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'add_task' %}">Dodaj zadanie</a>
 </body>
 </html>

@@ -3,14 +3,24 @@ from django.contrib.auth.models import AbstractUser
 
 
 class Position(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
+
+    class Meta:
+        ordering = ['name']
+        verbose_name = 'Position'
+        verbose_name_plural = 'Positions'
 
     def __str__(self):
         return self.name
 
 
 class TaskType(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
+
+    class Meta:
+        ordering = ['name']
+        verbose_name = 'Task Type'
+        verbose_name_plural = 'Task Types'
 
     def __str__(self):
         return self.name
@@ -19,14 +29,20 @@ class TaskType(models.Model):
 class Worker(AbstractUser):
     position = models.ForeignKey(
         Position,
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         related_name='workers',
         null=True,
         blank=True,
     )
 
+    class Meta:
+        ordering = ['username']
+        verbose_name = 'Worker'
+        verbose_name_plural = 'Workers'
+
     def __str__(self):
-        return f"{self.first_name} {self.last_name}"
+        full_name = f'{self.first_name} {self.last_name}'.strip()
+        return full_name if full_name else self.username
 
 
 class Task(models.Model):
@@ -43,17 +59,26 @@ class Task(models.Model):
     is_completed = models.BooleanField(default=False)
     priority = models.CharField(
         max_length=10,
-        choices=PRIORITY_CHOICES
+        choices=PRIORITY_CHOICES,
+        default='normal',
     )
     task_type = models.ForeignKey(
         TaskType,
-        on_delete=models.CASCADE,
-        related_name='tasks'
+        on_delete=models.SET_NULL,
+        related_name='tasks',
+        null=True,
+        blank=True,
     )
     assignees = models.ManyToManyField(
         Worker,
-        related_name='tasks'
+        related_name='tasks',
+        blank=True,
     )
 
+    class Meta:
+        ordering = ['deadline', 'priority']
+        verbose_name = 'Task'
+        verbose_name_plural = 'Tasks'
+
     def __str__(self):
-        return self.name
+        return f'{self.name} ({self.get_priority_display()})'
