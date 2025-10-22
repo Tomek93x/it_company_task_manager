@@ -1,9 +1,9 @@
-"""URL configuration for the IT Company Task Manager project."""
+"""Main URL configuration for IT Company Task Manager."""
 
 from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("", include("catalog.urls", namespace="catalog")),
+    path("", include("catalog.urls")),
 ]
