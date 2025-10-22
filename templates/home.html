@@ -4,36 +4,50 @@
     <title>IT Company Task Manager</title>
 </head>
 <body>
-    <h1>Strona główna</h1>
+    <h1>Main Page</h1>
 
-    <h2>Pracownicy</h2>
+    <h2>Positions</h2>
     <ul>
-        {% for w in workers %}
-        <li>{{ w.first_name }} {{ w.last_name }} - {{ w.position }}</li>
+        {% for pos in positions %}
+            <li>{{ pos.name }}</li>
         {% empty %}
-        <li>Brak pracowników</li>
+            <li>No positions available.</li>
         {% endfor %}
     </ul>
-    <a href="{% url 'add_worker' %}">Dodaj pracownika</a>
+    <a href="{% url 'add_position' %}">Add position</a>
 
-    <h2>Stanowiska</h2>
+    <h2>Workers</h2>
     <ul>
-        {% for p in positions %}
-        <li>{{ p.name }}</li>
+        {% for worker in workers %}
+            <li>{{ worker.first_name }} {{ worker.last_name }} - {{ worker.position }}</li>
         {% empty %}
-        <li>Brak stanowisk</li>
+            <li>No workers available.</li>
         {% endfor %}
     </ul>
-    <a href="{% url 'add_position' %}">Dodaj stanowisko</a>
+    <a href="{% url 'add_worker' %}">Add worker</a>
 
-    <h2>Zadania</h2>
+    <h2>Task Types</h2>
     <ul>
-        {% for t in tasks %}
-        <li>{{ t.name }} - {{ t.deadline }} - {{ t.priority }}</li>
+        {% for tt in task_types %}
+            <li>{{ tt.name }}</li>
         {% empty %}
-        <li>Brak zadań</li>
+            <li>No task types available.</li>
         {% endfor %}
     </ul>
-    <a href="{% url 'add_task' %}">Dodaj zadanie</a>
+    <a href="{% url 'add_task_type' %}">Add task type</a>
+
+    <h2>Tasks</h2>
+    <ul>
+        {% for task in tasks %}
+            <li>
+                {{ task.name }} - {{ task.deadline }} - {{ task.priority }}
+                {% if task.is_completed %} (Completed) {% endif %}
+            </li>
+        {% empty %}
+            <li>No tasks available.</li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'add_task' %}">Add task</a>
+    <a href="{% url 'tasks' %}">Show all tasks</a>
 </body>
 </html>
