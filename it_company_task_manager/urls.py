@@ -1,13 +1,9 @@
-"""URL configuration for catalog app."""
+"""URL configuration for the IT Company Task Manager project."""
 
-from django.urls import path
-from . import views
+from django.contrib import admin
+from django.urls import path, include
 
 urlpatterns = [
-    path('', views.home, name='home'),
-    path('add-worker/', views.add_worker, name='add_worker'),
-    path('add-position/', views.add_position, name='add_position'),
-    path('add-task-type/', views.add_task_type, name='add_task_type'),
-    path('add-task/', views.add_task, name='add_task'),
-    path('tasks/', views.task_list, name='task_list'),
+    path("admin/", admin.site.urls),
+    path("", include("catalog.urls")),
 ]
