@@ -18,11 +18,14 @@
                 <h1 class="h5">Task List</h1>
             </div>
             <div class="card-body">
-
                 <!-- FORMULARZ FILTROWANIA/WYSZUKIWANIA -->
                 <form method="get" class="row mb-4 g-2">
                     <div class="col-md-5">
-                        <input type="text" name="q" value="{{ q }}" placeholder="Search tasks..." class="form-control" />
+                        <input type="text"
+                               name="q"
+                               value="{{ q }}"
+                               placeholder="Search tasks..."
+                               class="form-control" />
                     </div>
                     <div class="col-md-4">
                         <select name="sort" class="form-select">
@@ -37,13 +40,15 @@
                         <button type="submit" class="btn btn-warning w-100">Search</button>
                     </div>
                 </form>
-
                 <!-- LISTA ZADAŃ -->
                 <ul class="list-group">
                     {% for task in tasks %}
                         <li class="list-group-item">
-                            <strong>{{ task.name }}</strong>
-                            <span class="badge bg-info ms-2">{{ task.deadline }}</span> -
+                            <a href="{% url 'task_detail' task.pk %}">
+                                <strong>{{ task.name }}</strong>
+                            </a>
+                            <span class="badge bg-info ms-2">{{ task.deadline }}</span>
+                            -
                             {% if task.is_completed %}
                                 <span class="badge bg-success">Completed</span>
                             {% else %}
@@ -52,10 +57,14 @@
                             <span class="ms-2 text-muted">{{ task.priority }}</span>
                         </li>
                     {% empty %}
-                        <li class="list-group-item text-muted">No tasks in database.</li>
+                        <li class="list-group-item text-muted">
+                            No tasks in database.
+                        </li>
                     {% endfor %}
                 </ul>
-                <a href="{% url 'home' %}" class="btn btn-link mt-3">Back to main page</a>
+                <a href="{% url 'home' %}" class="btn btn-link mt-3">
+                    Back to main page
+                </a>
             </div>
         </div>
     </div>
