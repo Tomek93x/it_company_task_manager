@@ -20,7 +20,7 @@ class WorkerVisibilityTest(TestCase):
 
     def test_workers_visible_for_admin(self):
         self.client.login(username='admin', password='adminpass')
-        response = self.client.get(reverse('home'))  # domyślny adres - sprawdź czy inny!
+        response = self.client.get(reverse('home'))
         self.assertContains(response, "Workers")
         self.assertContains(response, "Jan Kowalski")
 

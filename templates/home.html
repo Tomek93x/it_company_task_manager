@@ -41,6 +41,7 @@
                     </div>
                 </div>
             </div>
+            {% if user.is_staff %}
             <div class="col-md-6 mb-4">
                 <div class="card">
                     <div class="card-header bg-success text-white">
@@ -58,6 +59,7 @@
                     </div>
                 </div>
             </div>
+            {% endif %}
         </div>
         <div class="row mb-4">
             <div class="col-md-6 mb-4">
@@ -94,4 +96,11 @@
                             {% endfor %}
                         </ul>
                         <a href="{% url 'add_task' %}" class="btn btn-sm btn-outline-warning">Add task</a>
-                        <a href="{% url 'tasks' %}" class="btn btn-sm btn-outline-dark">
+                        <a href="{% url 'tasks' %}" class="btn btn-sm btn-outline-dark">Show all tasks</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
