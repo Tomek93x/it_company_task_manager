@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-
+from django.conf import settings
 
 class Position(models.Model):
     name = models.CharField(max_length=100, unique=True)
@@ -13,7 +13,6 @@ class Position(models.Model):
     def __str__(self):
         return self.name
 
-
 class TaskType(models.Model):
     name = models.CharField(max_length=100, unique=True)
 
@@ -24,7 +23,6 @@ class TaskType(models.Model):
 
     def __str__(self):
         return self.name
-
 
 class Worker(AbstractUser):
     position = models.ForeignKey(
@@ -43,7 +41,6 @@ class Worker(AbstractUser):
     def __str__(self):
         full_name = f'{self.first_name} {self.last_name}'.strip()
         return full_name if full_name else self.username
-
 
 class Task(models.Model):
     PRIORITY_CHOICES = [
@@ -82,3 +79,17 @@ class Task(models.Model):
 
     def __str__(self):
         return f'{self.name} ({self.get_priority_display()})'
+
+class TaskComment(models.Model):
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name='comments')
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    text = models.TextField()
+    created = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created']
+        verbose_name = 'Task Comment'
+        verbose_name_plural = 'Task Comments'
+
+    def __str__(self):
+        return f"{self.author}: {self.text[:30]}"

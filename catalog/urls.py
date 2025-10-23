@@ -10,4 +10,6 @@ urlpatterns = [
     path("add-task-type/", views.add_task_type, name="add_task_type"),
     path("add-task/", views.add_task, name="add_task"),
     path("tasks-list/", views.task_list, name="tasks"),
+    # DODAJ TO!
+    path("tasks/<int:pk>/", views.task_detail, name="task_detail"),
 ]
