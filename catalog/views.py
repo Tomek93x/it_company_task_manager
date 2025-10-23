@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from .models import Worker, Position, Task, TaskType
 from .forms import WorkerForm, PositionForm, TaskTypeForm, TaskForm
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.db.models import Q
 
 def is_manager(user):
     return user.is_superuser or user.groups.filter(name='Manager').exists()
@@ -71,5 +72,12 @@ def add_task(request):
 
 @login_required
 def task_list(request):
+    # Filtrowanie, wyszukiwanie, sortowanie
+    q = request.GET.get('q', '')
     tasks = Task.objects.all()
-    return render(request, 'task_list.html', {'tasks': tasks})
+    if q:
+        tasks = tasks.filter(Q(name__icontains=q) | Q(description__icontains=q))
+    sort = request.GET.get('sort', '')
+    if sort:
+        tasks = tasks.order_by(sort)
+    return render(request, 'task_list.html', {'tasks': tasks, 'q': q, 'sort': sort})

@@ -18,6 +18,27 @@
                 <h1 class="h5">Task List</h1>
             </div>
             <div class="card-body">
+
+                <!-- FORMULARZ FILTROWANIA/WYSZUKIWANIA -->
+                <form method="get" class="row mb-4 g-2">
+                    <div class="col-md-5">
+                        <input type="text" name="q" value="{{ q }}" placeholder="Search tasks..." class="form-control" />
+                    </div>
+                    <div class="col-md-4">
+                        <select name="sort" class="form-select">
+                            <option value="">Sort by...</option>
+                            <option value="deadline" {% if sort == 'deadline' %}selected{% endif %}>Deadline ↑</option>
+                            <option value="-deadline" {% if sort == '-deadline' %}selected{% endif %}>Deadline ↓</option>
+                            <option value="priority" {% if sort == 'priority' %}selected{% endif %}>Priority ↑</option>
+                            <option value="-priority" {% if sort == '-priority' %}selected{% endif %}>Priority ↓</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <button type="submit" class="btn btn-warning w-100">Search</button>
+                    </div>
+                </form>
+
+                <!-- LISTA ZADAŃ -->
                 <ul class="list-group">
                     {% for task in tasks %}
                         <li class="list-group-item">
