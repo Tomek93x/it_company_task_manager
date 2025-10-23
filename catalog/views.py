@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from .models import Worker, Position, Task, TaskType
 from .forms import WorkerForm, PositionForm, TaskTypeForm, TaskForm
-
+from django.contrib.admin.views.decorators import staff_member_required
 
 def home(request):
     workers = Worker.objects.all()
@@ -19,7 +19,7 @@ def home(request):
         },
     )
 
-
+@staff_member_required
 def add_worker(request):
     if request.method == 'POST':
         form = WorkerForm(request.POST)
@@ -32,7 +32,6 @@ def add_worker(request):
         form = WorkerForm()
     return render(request, 'add_worker.html', {'form': form})
 
-
 def add_position(request):
     if request.method == 'POST':
         form = PositionForm(request.POST)
@@ -42,7 +41,6 @@ def add_position(request):
     else:
         form = PositionForm()
     return render(request, 'add_position.html', {'form': form})
-
 
 def add_task_type(request):
     if request.method == 'POST':
@@ -54,7 +52,6 @@ def add_task_type(request):
         form = TaskTypeForm()
     return render(request, 'add_task_type.html', {'form': form})
 
-
 def add_task(request):
     if request.method == 'POST':
         form = TaskForm(request.POST)
@@ -64,7 +61,6 @@ def add_task(request):
     else:
         form = TaskForm()
     return render(request, 'add_task.html', {'form': form})
-
 
 def task_list(request):
     tasks = Task.objects.all()
