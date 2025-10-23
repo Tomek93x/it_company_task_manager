@@ -15,7 +15,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'catalog',  # Twoja aplikacja z modelami
+    'catalog',  # Your custom app
 ]
 
 MIDDLEWARE = [
@@ -78,7 +78,9 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Ustawienie własnego modelu użytkownika
 AUTH_USER_MODEL = 'catalog.Worker'
 
+LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
+
+
