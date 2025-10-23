@@ -9,5 +9,5 @@ urlpatterns = [
     path("add-position/", views.add_position, name="add_position"),
     path("add-task-type/", views.add_task_type, name="add_task_type"),
     path("add-task/", views.add_task, name="add_task"),
-    path("tasks/", views.task_list, name="task_list"),
+    path("tasks-list/", views.task_list, name="tasks"),
 ]

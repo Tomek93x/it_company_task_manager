@@ -80,3 +80,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Ustawienie własnego modelu użytkownika
 AUTH_USER_MODEL = 'catalog.Worker'
+
+LOGIN_REDIRECT_URL = '/'
