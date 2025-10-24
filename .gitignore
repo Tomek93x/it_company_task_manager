@@ -1,4 +1,4 @@
 .idea
-.venv
+venv/
 **__pycache__
-db.sqlite3
+db.sqlite3D
