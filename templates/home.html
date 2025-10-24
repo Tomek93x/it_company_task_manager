@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>IT Company Task Manager</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap 5 Volt CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <nav class="navbar navbar-dark bg-primary mb-4">
+        <div class="container-fluid">
+            <span class="navbar-brand mb-0 h1">IT Task Manager</span>
+            {% if user.is_authenticated %}
+                <span class="text-white ms-auto me-3">Logged in as {{ user.username }}</span>
+                <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-outline-light btn-sm">Logout</button>
+                </form>
+            {% else %}
+                <a href="{% url 'login' %}" class="btn btn-outline-light btn-sm ms-auto">Login</a>
+            {% endif %}
+        </div>
+    </nav>
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header bg-info text-white">
+                        <h2 class="h5 m-0">Positions</h2>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group mb-2">
+                            {% for pos in positions %}
+                                <li class="list-group-item">{{ pos.name }}</li>
+                            {% empty %}
+                                <li class="list-group-item text-muted">No positions available.</li>
+                            {% endfor %}
+                        </ul>
+                        <a href="{% url 'add_position' %}" class="btn btn-sm btn-outline-primary">Add position</a>
+                    </div>
+                </div>
+            </div>
+            {% if user.is_staff %}
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header bg-success text-white">
+                        <h2 class="h5 m-0">Workers</h2>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group mb-2">
+                            {% for worker in workers %}
+                                <li class="list-group-item">{{ worker.first_name }} {{ worker.last_name }} - {{ worker.position }}</li>
+                            {% empty %}
+                                <li class="list-group-item text-muted">No workers available.</li>
+                            {% endfor %}
+                        </ul>
+                        <a href="{% url 'add_worker' %}" class="btn btn-sm btn-outline-success">Add worker</a>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        <div class="row mb-4">
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header bg-secondary text-white">
+                        <h2 class="h5 m-0">Task Types</h2>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group mb-2">
+                            {% for tt in task_types %}
+                                <li class="list-group-item">{{ tt.name }}</li>
+                            {% empty %}
+                                <li class="list-group-item text-muted">No task types available.</li>
+                            {% endfor %}
+                        </ul>
+                        <a href="{% url 'add_task_type' %}" class="btn btn-sm btn-outline-secondary">Add task type</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header bg-warning text-dark">
+                        <h2 class="h5 m-0">Tasks</h2>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group mb-2">
+                            {% for task in tasks %}
+                                <li class="list-group-item">
+                                    {{ task.name }} - {{ task.deadline }} - {{ task.priority }}
+                                    {% if task.is_completed %} <span class="badge bg-success">Completed</span> {% endif %}
+                                </li>
+                            {% empty %}
+                                <li class="list-group-item text-muted">No tasks available.</li>
+                            {% endfor %}
+                        </ul>
+                        <a href="{% url 'add_task' %}" class="btn btn-sm btn-outline-warning">Add task</a>
+                        <a href="{% url 'tasks' %}" class="btn btn-sm btn-outline-dark">Show all tasks</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
