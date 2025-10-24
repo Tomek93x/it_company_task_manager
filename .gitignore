@@ -3,3 +3,4 @@ it_company_task_manager/venv/
 venv/
 **__pycache__
 db.sqlite3D
+.env

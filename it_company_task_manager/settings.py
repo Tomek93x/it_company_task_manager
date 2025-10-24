@@ -1,8 +1,19 @@
 from pathlib import Path
+import os
+
+# Opcjonalnie dodaj obsługę .env dla local dev
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure--@1n4h#m2*e8@((@!v!_jdcd2xuwtiy3fvoq8&dp0ys_8isq_c'
+# SECRET_KEY z environment variable lub .env
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
+if not SECRET_KEY:
+    raise Exception("Set DJANGO_SECRET_KEY environment variable!")
 
 DEBUG = True
 
@@ -82,5 +93,3 @@ AUTH_USER_MODEL = 'catalog.Worker'
 
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
-
-
