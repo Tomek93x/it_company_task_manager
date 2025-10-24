@@ -1,117 +1,112 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.views.generic import TemplateView, ListView, DetailView, CreateView
+from django.urls import reverse_lazy
 from django.db.models import Q
 
 from .models import Worker, Position, Task, TaskType
 from .forms import WorkerForm, PositionForm, TaskTypeForm, TaskForm, TaskCommentForm
 
 
-def is_manager(user):
-    return user.is_superuser or user.groups.filter(name='Manager').exists()
+class ManagerRequiredMixin(UserPassesTestMixin):
+    def test_func(self):
+        user = self.request.user
+        return user.is_superuser or user.groups.filter(name='Manager').exists()
 
 
-@login_required
-def home(request):
-    workers = Worker.objects.all()
-    tasks = Task.objects.all()
-    positions = Position.objects.all()
-    task_types = TaskType.objects.all()
-    return render(
-        request,
-        'home.html',
-        {
-            'workers': workers,
-            'tasks': tasks,
-            'positions': positions,
-            'task_types': task_types,
-        },
-    )
+class HomeView(LoginRequiredMixin, TemplateView):
+    template_name = 'home.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['workers'] = Worker.objects.all()
+        context['tasks'] = Task.objects.all()
+        context['positions'] = Position.objects.all()
+        context['task_types'] = TaskType.objects.all()
+        return context
 
 
-@user_passes_test(is_manager)
-def add_worker(request):
-    if request.method == 'POST':
-        form = WorkerForm(request.POST)
-        if form.is_valid():
-            worker = form.save(commit=False)
-            worker.set_password(form.cleaned_data['password'])
-            worker.save()
-            return redirect('home')
-    else:
-        form = WorkerForm()
-    return render(request, 'add_worker.html', {'form': form})
+class AddWorkerView(ManagerRequiredMixin, CreateView):
+    model = Worker
+    form_class = WorkerForm
+    template_name = "add_worker.html"
+    success_url = reverse_lazy("home")
+
+    def form_valid(self, form):
+        worker = form.save(commit=False)
+        worker.set_password(form.cleaned_data['password'])
+        worker.save()
+        return super().form_valid(form)
 
 
-@user_passes_test(is_manager)
-def add_position(request):
-    if request.method == 'POST':
-        form = PositionForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('home')
-    else:
-        form = PositionForm()
-    return render(request, 'add_position.html', {'form': form})
+class AddPositionView(ManagerRequiredMixin, CreateView):
+    model = Position
+    form_class = PositionForm
+    template_name = "add_position.html"
+    success_url = reverse_lazy("home")
 
 
-@user_passes_test(is_manager)
-def add_task_type(request):
-    if request.method == 'POST':
-        form = TaskTypeForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('home')
-    else:
-        form = TaskTypeForm()
-    return render(request, 'add_task_type.html', {'form': form})
+class AddTaskTypeView(ManagerRequiredMixin, CreateView):
+    model = TaskType
+    form_class = TaskTypeForm
+    template_name = "add_task_type.html"
+    success_url = reverse_lazy("home")
 
 
-@user_passes_test(is_manager)
-def add_task(request):
-    if request.method == 'POST':
-        form = TaskForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('home')
-    else:
-        form = TaskForm()
-    return render(request, 'add_task.html', {'form': form})
+class AddTaskView(ManagerRequiredMixin, CreateView):
+    model = Task
+    form_class = TaskForm
+    template_name = "add_task.html"
+    success_url = reverse_lazy("home")
 
 
-@login_required
-def task_list(request):
-    q = request.GET.get('q', '')
-    tasks = Task.objects.all()
-    if q:
-        tasks = tasks.filter(
-            Q(name__icontains=q) | Q(description__icontains=q)
-        )
-    sort = request.GET.get('sort', '')
-    if sort:
-        tasks = tasks.order_by(sort)
-    return render(
-        request,
-        'task_list.html',
-        {'tasks': tasks, 'q': q, 'sort': sort}
-    )
+class TaskListView(LoginRequiredMixin, ListView):
+    model = Task
+    template_name = "task_list.html"
+    context_object_name = "tasks"
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        q = self.request.GET.get("q", "")
+        if q:
+            qs = qs.filter(Q(name__icontains=q) | Q(description__icontains=q))
+        sort = self.request.GET.get("sort", "")
+        if sort:
+            qs = qs.order_by(sort)
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["q"] = self.request.GET.get("q", "")
+        context["sort"] = self.request.GET.get("sort", "")
+        return context
 
 
-@login_required
-def task_detail(request, pk):
-    task = get_object_or_404(Task, pk=pk)
-    comments = task.comments.select_related('author').order_by('-created')
-    if request.method == "POST":
-        form = TaskCommentForm(request.POST)
-        if form.is_valid():
-            comment = form.save(commit=False)
-            comment.task = task
-            comment.author = request.user
-            comment.save()
-            return redirect('task_detail', pk=task.pk)
-    else:
-        form = TaskCommentForm()
-    return render(
-        request,
-        "task_detail.html",
-        {"task": task, "comments": comments, "form": form}
-    )
+class TaskDetailView(LoginRequiredMixin, DetailView):
+    model = Task
+    template_name = "task_detail.html"
+    context_object_name = "task"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        task = self.get_object()
+        comments = task.comments.select_related("author").order_by("-created")
+        context["comments"] = comments
+
+        if self.request.method == "POST":
+            form = TaskCommentForm(self.request.POST)
+            if form.is_valid():
+                comment = form.save(commit=False)
+                comment.task = task
+                comment.author = self.request.user
+                comment.save()
+                return redirect("task_detail", pk=task.pk)
+        else:
+            form = TaskCommentForm()
+        context["form"] = form
+        return context
+
+    def post(self, *args, **kwargs):
+        # Obsługa komentarza przez POST
+        self.object = self.get_object()
+        context = self.get_context_data(object=self.object)
+        return self.render_to_response(context)

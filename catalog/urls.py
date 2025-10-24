@@ -1,15 +1,22 @@
 """URL configuration for the catalog app."""
 
 from django.urls import path
-from . import views
+from .views import (
+    HomeView,
+    AddWorkerView,
+    AddPositionView,
+    AddTaskTypeView,
+    AddTaskView,
+    TaskListView,
+    TaskDetailView,
+)
 
 urlpatterns = [
-    path("", views.home, name="home"),
-    path("add-worker/", views.add_worker, name="add_worker"),
-    path("add-position/", views.add_position, name="add_position"),
-    path("add-task-type/", views.add_task_type, name="add_task_type"),
-    path("add-task/", views.add_task, name="add_task"),
-    path("tasks-list/", views.task_list, name="tasks"),
-    # DODAJ TO!
-    path("tasks/<int:pk>/", views.task_detail, name="task_detail"),
+    path("", HomeView.as_view(), name="home"),
+    path("add-worker/", AddWorkerView.as_view(), name="add_worker"),
+    path("add-position/", AddPositionView.as_view(), name="add_position"),
+    path("add-task-type/", AddTaskTypeView.as_view(), name="add_task_type"),
+    path("add-task/", AddTaskView.as_view(), name="add_task"),
+    path("tasks-list/", TaskListView.as_view(), name="tasks"),
+    path("tasks/<int:pk>/", TaskDetailView.as_view(), name="task_detail"),
 ]
